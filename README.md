@@ -1,19 +1,19 @@
-Creacion de BD para flask en contenedor de postgres ya existente
+# Creacion de BD para flask en contenedor de postgres ya existente
 
 
-# 1. Encuentra el nombre de tu contenedor (ej: 'mi-proyecto-db-1')
+## 1. Encuentra el nombre de tu contenedor (ej: 'mi-proyecto-db-1')
 docker ps
 
-# 2. Entra al contenedor con psql
-# Usa el usuario que tienes en tu .env (ej: 'django_user')
+## 2. Entra al contenedor con psql
+### Usa el usuario que tienes en tu .env (ej: 'django_user')
 docker exec -it 70a179550fa8 psql -U django_user -d djangodb
 
 
-# 3. Una vez dentro de psql (verás postgres=# o djangodb=#), crea la nueva base de datos:
+## 3. Una vez dentro de psql (verás postgres=# o djangodb=#), crea la nueva base de datos:
 
 CREATE DATABASE blogposts_db;
 
-# 4. Sales con \q
+## 4. Sales con \q
 
 
 Aclarar que el usuario y contraseña de postgress es para todas las aplicaciones la misma, lo único que cambiaria es la bd.
@@ -27,13 +27,13 @@ Es por ello que hay que meterse ene l contenedor a mano y crear la bd a mano sin
 # Anulacion de registro de usuarios nuevos:
 ## Comentar las siguientes lineas de los siguientes archivos.
 login.html
- ``` <!--             <a href="{{ url_for('auth.register') }}">Crear cuenta</a> -->  ```
+ ``` {#            <a href="{{ url_for('auth.register') }}">Crear cuenta</a> #}  ```
 
 index.html
- ``` <!--                <a href="{{url_for('auth.register') }}" class="btn btn-outline-dark w-50 fs-3">Registrate</a> -->  ```
+ ``` {#                <a href="{{url_for('auth.register') }}" class="btn btn-outline-dark w-50 fs-3">Registrate</a> #}  ```
 
 base.html
- ``` <!--                   <a href="{{url_for('auth.register') }}" class="btn btn-warning">Registrate</a>        -->  ```
+ ``` {#                   <a href="{{url_for('auth.register') }}" class="btn btn-warning">Registrate</a>        #}       ```
 
 
 ## Comentar funcion register en auth.py
