@@ -58,7 +58,7 @@ jobs:
             
             # 4. Reiniciar el contenedor (usando docker-compose)
             # Asegúrate de tener el docker-compose.yml en el servidor (ver paso 3)
-            docker-compose -f "blog.yml" up -d --force-recreate
+            docker compose -f "blog.yml" up -d --force-recreate
             
             # 5. Limpiar imágenes viejas para ahorrar espacio
             docker image prune -f
