@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
+  blog:
+    image: ghcr.io/jornkbz/blog-flask:latest
     ports:
       - "5005:5000"
     env_file:

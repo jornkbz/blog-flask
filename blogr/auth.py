@@ -5,30 +5,30 @@ from .models import User
 from blogr import db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
-
-@bp.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
+#COMENTADO TODA LA FUNCION PARA ELIMINAR LA OPCION DE REGISTRARSE Y EVITAR PROBLEMAS DE SEGURIDAD
+# @bp.route('/register', methods=('GET', 'POST'))
+# def register():
+#     if request.method == 'POST':
+#         username = request.form.get('username')
+#         email = request.form.get('email')
+#         password = request.form.get('password')
         
-        user = User(username, email, generate_password_hash(password))
+#         user = User(username, email, generate_password_hash(password))
         
-        # Validación básica
-        error = None
-        user_email = User.query.filter_by(email=email).first()
+#         # Validación básica
+#         error = None
+#         user_email = User.query.filter_by(email=email).first()
         
-        if user_email is None:
-            db.session.add(user)
-            db.session.commit()
-            return redirect(url_for('auth.login'))
-        else:
-            error = f'El correo {email} ya está registrado'
+#         if user_email is None:
+#             db.session.add(user)
+#             db.session.commit()
+#             return redirect(url_for('auth.login'))
+#         else:
+#             error = f'El correo {email} ya está registrado'
         
-        flash(error)
+#         flash(error)
         
-    return render_template('auth/register.html')
+#     return render_template('auth/register.html')
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
