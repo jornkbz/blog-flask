@@ -41,9 +41,10 @@ jobs:
       - name: Desplegar vía SSH
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.IONOS_HOST }}
+          username: ${{ secrets.IONOS_USERNAME }}
+          key: ${{ secrets.IONOS_SSH_KEY }}
+          port: ${{ secrets.IONOS_SSH_PORT }}
           script: |
             # 1. Ir a la carpeta del proyecto (créala si no existe)
             # mkdir -p /srv/docker/blog-flask
