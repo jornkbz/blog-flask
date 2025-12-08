@@ -4,7 +4,7 @@ services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "5005:5000"
     env_file:
       - .env
     environment:
@@ -12,9 +12,9 @@ services:
       - FLASK_DEBUG=1
 
     networks:
-      - postgres_default
+      - neura_django
 
 networks:
-  postgres_default:
+  neura_django:
     external: true
-    name: postgres_default
+    name: neura_django
