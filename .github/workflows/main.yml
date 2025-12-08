@@ -32,7 +32,7 @@ jobs:
           context: .
           push: true
           # Cambia 'tu_usuario' por tu user real de Docker Hub
-          tags: ${{ secrets.DOCKER_USERNAME }}/mi-blog-flask:latest
+          tags: ghcr.io/${{ github.actor }}/blog-flask:latest
 
   deploy-to-vps:
     needs: build-and-push
