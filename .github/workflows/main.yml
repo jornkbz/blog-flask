@@ -54,8 +54,9 @@ jobs:
             # echo "${{ secrets.FLASK_ENV_PROD }}" > .env
             
             # 3. Descargar la última imagen
-            docker pull ${{ secrets.DOCKER_USERNAME }}/blog-flask:latest
-            
+            # docker pull ${{ secrets.DOCKER_USERNAME }}/blog-flask:latest
+            docker compose -f "blog.yml" pull
+
             # 4. Reiniciar el contenedor (usando docker-compose)
             # Asegúrate de tener el docker-compose.yml en el servidor (ver paso 3)
             docker compose -f "blog.yml" up -d --force-recreate
