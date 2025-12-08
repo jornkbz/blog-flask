@@ -1,0 +1,57 @@
+name: Deploy Blog to Ionos
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v3
+
+      - name: Login en Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Construir y Subir Imagen
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          # Cambia 'tu_usuario' por tu user real de Docker Hub
+          tags: ${{ secrets.DOCKER_USERNAME }}/mi-blog-flask:latest
+
+  deploy-to-vps:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Desplegar vía SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # 1. Ir a la carpeta del proyecto (créala si no existe)
+            # mkdir -p /srv/docker/blog-flask
+            cd /srv/docker/blog-flask
+            
+            # 2. Crear el archivo .env actualizado con los secretos de GitHub
+            # echo "${{ secrets.FLASK_ENV_PROD }}" > .env
+            
+            # 3. Descargar la última imagen
+            docker pull ${{ secrets.DOCKER_USERNAME }}/mi-blog-flask:latest
+            
+            # 4. Reiniciar el contenedor (usando docker-compose)
+            # Asegúrate de tener el docker-compose.yml en el servidor (ver paso 3)
+            docker-compose -f "blog.yml" up -d --force-recreate
+            
+            # 5. Limpiar imágenes viejas para ahorrar espacio
+            docker image prune -f

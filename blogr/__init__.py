@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+# Importamos locale aquí arriba para tenerlo ordenado
+import locale 
 
 db = SQLAlchemy()
 
@@ -8,16 +10,29 @@ def create_app():
     app = Flask(__name__)
     
     app.config.from_object('config.Config')
-    #Inicialilzar base de datos
+    
+    # Inicializar base de datos
     db.init_app(app)
     
     from flask_ckeditor import CKEditor
     ckeditor = CKEditor(app)
     
-    import locale
-    locale.setlocale(locale.LC_ALL, 'es_ES')
+    # --- BLOQUE CORREGIDO PARA IDIOMA (WINDOWS + DOCKER) ---
+    try:
+        # Intenta primero el formato de Linux/Docker (es_ES.UTF-8)
+        locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
+        print("Locale configurado a es_ES.UTF-8 (Linux/Docker)")
+    except locale.Error:
+        try:
+            # Si falla, intenta el formato de Windows (es_ES)
+            locale.setlocale(locale.LC_ALL, 'es_ES')
+            print("Locale configurado a es_ES (Windows)")
+        except locale.Error:
+            # Si todo falla, usa el por defecto y avisa
+            print("Advertencia: No se pudo configurar el idioma español. Usando por defecto.")
+    # -------------------------------------------------------
     
-    #Registrar vistas
+    # Registrar vistas
     from blogr import home
     app.register_blueprint(home.bp)
     
