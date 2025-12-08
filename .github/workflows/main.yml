@@ -54,7 +54,7 @@ jobs:
             # echo "${{ secrets.FLASK_ENV_PROD }}" > .env
             
             # 3. Descargar la última imagen
-            docker pull ${{ secrets.DOCKER_USERNAME }}/mi-blog-flask:latest
+            docker ${{ secrets.DOCKER_USERNAME }}/mi-blog-flask:latest
             
             # 4. Reiniciar el contenedor (usando docker-compose)
             # Asegúrate de tener el docker-compose.yml en el servidor (ver paso 3)
