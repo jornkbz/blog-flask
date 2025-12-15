@@ -1,75 +1,61 @@
 {% extends 'base.html' %}
 
-{% block content  %}
-    <!-- Sección de bienvenida -->
-    <section class="container" {{ value }}>
-        <div class="row">
-            <div class="col-md-6 py-5">
-                <h1 class="display-4 fst-italic"> {% block title %}Bienvenido a BLOG SPOTS{% endblock %}</h1>
-                <p>Aquí podrás compartir tus ideas, pensamientos y experiencias con una comunidad global de lectores.
-                    Nuestra plataforma es fácil de usar y te permite publicar tus blogs en pocos pasos.
-                </p>
-                <p>
-                    Para empezar, simplemente haz clic en el botón "Publica tu blog" y comienza a escribir. Puedes
-                    incluir
-                    imágenes y videos para dar vida a tus publicaciones y asegurarte de que sean atractivas para tus
-                    lectores.</p>
-                <p>
-                    ¡Únete a nuestra comunidad hoy y comienza a compartir tus ideas con el mundo!
-                </p>
-  {#               <a href="{{url_for('auth.register') }}" class="btn btn-outline-dark w-50 fs-3">Registrate</a> #}
+{% block title %}Inicio{% endblock %}
 
-            </div>
-            <div class="col-md-6">
-                <img src="{{url_for('static', filename = 'img/bloguer.jpg') }}" alt="Imagen de bienvenida" class="img-fluid">
-            </div>
-        </div>
-    </section>
-
-    <div class="text-center">
-        <div class="py-5">
-            <h2 class="display-4 fst-italic">¿Buscas algo en particular?</h2>
-            <div class="col-lg-6 mx-auto">
-                <p class="fs-5 mb-4">Utiliza nuestro buscador para encontrar blogs específicos o temas que te interesen.
-                    Simplemente ingresa una
-                    palabra clave o frase y haz clic en "buscar". ¡Te sorprenderá lo fácil que es encontrar el contenido
-                    que
-                    buscas!
-                </p>
-
-                <div class="col container">
-                    <form class="d-flex" method="post">
-                        <input class="form-control me-2" type="search" name="search" placeholder="Buscar" aria-label="Search">
-                        <button type="submit" class="btn btn-primary btn-lg">Buscar</button>
-                    </form>
-                </div>
+{% block content %}
+    <div class="p-5 mb-4 bg-light rounded-3 border">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold">Base de Conocimiento</h1>
+            <p class="col-md-8 fs-4">Procedimientos, scripts de Python, configuraciones de Docker y notas de DevOps.</p>
+            
+            <div class="col-md-8 mt-4">
+                <form class="d-flex gap-2" method="post">
+                    <input class="form-control form-control-lg" type="search" name="search" placeholder="🔍 Buscar comando, error, configuración..." aria-label="Search">
+                    <button class="btn btn-primary btn-lg" type="submit">Buscar</button>
+                </form>
             </div>
         </div>
     </div>
 
-    <main class="container py-5">
-        <div class="row">
-            {% for post in posts | reverse %}
-            <div class="col-md-6">
-                <div
-                    class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                    <div class="col p-4 d-flex flex-column position-static">
-                        <h3 class="mb-0">{{post.title}}</h3>                   
-                        <p class="card-text mb-auto">{{ post.info }}</p>
-                        <a href="{{ url_for('home.blog', url = post.url) }}" class="stretched-link">Continuar leyendo</a>
-                        <p class="card-text mt-3">
-                            {% if get_user(post.author).photo is none %}
-                            <img src ="{{ url_for('static', filename = 'img/user-dark.png') }}" alt="mdo" width="30" class="rounded-circle">
-                            {% else %}
-                            <img src ="{{ url_for('static', filename = get_user(post.author).photo ) }}" alt="mdo" width="30" class="rounded-circle">
+    <div class="row align-items-md-stretch">
+        <h3 class="pb-2 mb-3 border-bottom fst-italic">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock align-text-bottom"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Recientemente actualizado
+        </h3>
 
-                            {% endif %}
-                            <span class="mb-1 text-muted"><b>{{ get_user(post.author).username}}</b> - {{ post.created.strftime('%d de %B %Y') }}</span>
-                        </p>
-                    </div>
-                </div>
+        {% for post in posts | reverse %}
+        <div class="col-md-6 mb-4">
+            <div class="h-100 p-4 bg-white border rounded-3 shadow-sm position-relative hover-shadow">
+                
+                <small class="text-muted d-block mb-2">
+                    Actualizado: {{ post.created.strftime('%d %b %Y') }}
+                </small>
+
+                <h2 class="h4 mb-3">{{ post.title }}</h2>
+                
+                <p class="text-muted mb-4">
+                    {{ post.info[:150] }}...
+                </p>
+                
+                <a href="{{ url_for('home.blog', url = post.url) }}" class="btn btn-outline-primary btn-sm stretched-link">
+                    Ver documentación &rarr;
+                </a>
             </div>
-            {% endfor %}
         </div>
-    </main>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-warning">
+                Aún no hay documentación creada. ¡Empieza a escribir!
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .hover-shadow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+            transition: all 0.3s ease;
+        }
+    </style>
 {% endblock %}
