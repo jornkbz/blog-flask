@@ -4,62 +4,83 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  REGISTRY: ghcr.io
+  # Asegúrate que está en minúsculas
+  IMAGE_NAME: jornkbz/blog-flask
+
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    steps:
-      - name: Descargar código
-        uses: actions/checkout@v3
 
+    steps:
+      # 1. Bajar código
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Login en GitHub Registry (Para subir la imagen)
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          # El usuario es tu nombre de GitHub (automático)
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          # El password es un token temporal automático (no necesitas crearlo)
           password: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Configurar Docker Buildx
-        uses: docker/setup-buildx-action@v2
 
-      - name: Construir y Subir Imagen
-        uses: docker/build-push-action@v4
+      # 3. Metadatos Docker
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: type=raw,value=latest
+
+      # 4. Construir y Subir imagen
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          # Cambia 'tu_usuario' por tu user real de Docker Hub
-          tags: ghcr.io/${{ github.actor }}/blog-flask:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
-  deploy-to-vps:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Desplegar vía SSH
-        uses: appleboy/ssh-action@master
+      # 5. Desplegar en IONOS
+      - name: Deploy to VPS using SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.IONOS_HOST }}
           username: ${{ secrets.IONOS_USERNAME }}
           key: ${{ secrets.IONOS_SSH_KEY }}
           port: ${{ secrets.IONOS_SSH_PORT }}
           script: |
-            # 1. Ir a la carpeta del proyecto (créala si no existe)
-            # mkdir -p /srv/docker/blog-flask
+            # Ir a la carpeta del proyecto
+            # Asegúrate que la carpeta existe primero
+            mkdir -p /srv/docker/blog-flask
             cd /srv/docker/blog-flask
-            
-            # 2. Crear el archivo .env actualizado con los secretos de GitHub
-            # echo "${{ secrets.FLASK_ENV_PROD }}" > .env
-            echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            # 3. Descargar la última imagen
-            # docker pull ${{ secrets.DOCKER_USERNAME }}/blog-flask:latest
-            docker compose -f "blog.yml" pull
 
-            # 4. Reiniciar el contenedor (usando docker-compose)
-            # Asegúrate de tener el docker-compose.yml en el servidor (ver paso 3)
+            # ---------------------------------------------------------
+            # AQUÍ ESTABA EL ERROR ANTES:
+            # Usamos CR_PAT que acabas de crear. 
+            # Al no estar vacío, el pipe (|) funcionará y no dará error TTY.
+            echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # ---------------------------------------------------------
+
+            # Regenerar .env necesario
+            echo "FLASK_APP=run.py" > .env
+            echo "FLASK_DEBUG=0" >> .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+            echo "RECAPTCHA_ENABLED=True" >> .env
+            echo "RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}" >> .env
+            echo "RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}" >> .env
+            
+            # Descargar la nueva imagen
+            docker compose -f "blog.yml" pull
+            
+            # Reiniciar contenedores
             docker compose -f "blog.yml" up -d --force-recreate
             
-            # 5. Limpiar imágenes viejas para ahorrar espacio
+            # Limpieza
             docker image prune -f
