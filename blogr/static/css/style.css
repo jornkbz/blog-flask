@@ -131,3 +131,159 @@ h1, h2, h3 {
     margin-bottom: 1rem;
     font-weight: 600;
 }
+
+/* =========================================
+   THEME: SYSADMIN / CYBERSECURITY TERMINAL
+   ========================================= */
+
+:root {
+    --bg-color: #0d1117;       /* Negro GitHub Dark o #000000 puro */
+    --console-bg: #000000;
+    --text-main: #00ff41;      /* Verde Matrix clásico */
+    --text-dim: #008F11;       /* Verde oscuro para bordes */
+    --accent: #d300c4;         /* Rosa Ciberpunk para errores/alertas */
+    --link-hover: #ffffff;
+    --font-main: 'Fira Code', 'Courier New', monospace;
+    --font-header: 'Share Tech Mono', monospace;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-main);
+    /* Fondo con efecto línea de escaneo sutil (opcional) */
+    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+}
+
+/* --- Títulos y Encabezados --- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-main);
+    text-shadow: 0 0 5px var(--text-dim); /* Brillo de terminal */
+}
+
+/* --- Eliminamos curvas de Bootstrap (Todo cuadrado) --- */
+.card, .btn, .form-control, .alert, .badge, .img-thumbnail {
+    border-radius: 0 !important;
+}
+
+/* --- Navbar Superior --- */
+header.navbar {
+    background-color: #000000 !important;
+    border-bottom: 2px solid var(--text-dim);
+}
+
+.navbar-brand {
+    color: var(--text-main) !important;
+    font-weight: bold;
+}
+
+.navbar-brand img {
+    filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg); /* Vuelve el logo verde */
+}
+
+/* --- Sidebar Lateral --- */
+.sidebar {
+    background-color: var(--console-bg) !important;
+    border-right: 1px solid var(--text-dim);
+}
+
+.sidebar .nav-link {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    color: var(--text-main);
+    background-color: rgba(0, 255, 65, 0.1);
+    border-left: 3px solid var(--text-main);
+    padding-left: 10px; /* Pequeño salto al hacer hover */
+    transition: all 0.2s;
+}
+
+/* --- Tarjetas (Cards) --- */
+.card {
+    background-color: rgba(0, 20, 0, 0.3); /* Fondo semitransparente */
+    border: 1px solid var(--text-dim);
+    box-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--text-main);
+    box-shadow: 0 0 15px var(--text-dim); /* Glow verde al pasar el mouse */
+    transform: translateY(-2px);
+}
+
+.card h2, .card h3 {
+    color: #fff; /* Títulos de tarjeta en blanco para contraste */
+}
+
+.card .text-muted {
+    color: #888 !important;
+}
+
+/* --- Botones --- */
+.btn-primary, .btn-outline-primary {
+    background-color: transparent;
+    border: 1px solid var(--text-main);
+    color: var(--text-main);
+    font-family: var(--font-header);
+    text-transform: uppercase;
+}
+
+.btn-primary:hover, .btn-outline-primary:hover {
+    background-color: var(--text-main);
+    color: #000; /* Texto negro sobre fondo verde */
+    box-shadow: 0 0 10px var(--text-main);
+}
+
+/* --- Inputs y Buscador --- */
+.form-control {
+    background-color: #000;
+    border: 1px solid var(--text-dim);
+    color: var(--text-main);
+    font-family: var(--font-main);
+}
+
+.form-control:focus {
+    background-color: #050505;
+    border-color: var(--text-main);
+    box-shadow: 0 0 5px var(--text-dim);
+    color: #fff;
+}
+
+/* Placeholder color */
+::placeholder {
+    color: #3a5c3a !important;
+    opacity: 1;
+}
+
+/* --- Admonitions (Cajas de aviso) en modo Dark --- */
+.admonition.note {
+    background-color: rgba(13, 110, 253, 0.1);
+    border-left-color: #0d6efd;
+    color: #a6cbfd;
+}
+
+.admonition.warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left-color: #ffc107;
+    color: #ffe69c;
+}
+
+/* --- Efecto Cursor Parpadeante (Opcional para títulos) --- */
+.blinking-cursor::after {
+    content: "▋";
+    animation: blink 1s step-end infinite;
+    color: var(--text-main);
+    margin-left: 5px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
