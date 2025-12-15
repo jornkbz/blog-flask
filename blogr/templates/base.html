@@ -5,97 +5,111 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlogPosts - {% block title %}{% endblock %}</title>
+    <title>Wiki - {% block title %}{% endblock %}</title>
 
-    <!-- Estilos de bootstrap y de app -->
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css') }}">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
     {% block head %}
     {% endblock %}
 </head>
 
 <body>
     {% block header %}
-    <header class="p-3 text-bg-dark">
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-between">
-                <a href="{{url_for('home.index') }}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <img src="{{url_for('static', filename = 'img/bp-light.png') }}" alt="blog posts" width="40">
-                </a>
-
-                <div class="text-end">
-                    {% if not g.user %}
-                    <a href="{{url_for('auth.login') }}" class="btn btn-outline-light me-2">Iniciar sesión</a>
-{#                   <a href="{{url_for('auth.register') }}" class="btn btn-warning">Registrate</a>        #}          
-
-                    {% else %}
-                    <a href="#" class="link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                        
-                        {% if g.user.photo is none %}
-                            <img src="{{url_for('static', filename = 'img/user-light.png') }}" alt="mdo" width="32" height="32" class="rounded-circle">
-                        {% else %}
-                            <img src="{{url_for('static', filename = g.user.photo) }}" alt="mdo" width="32" height="32" class="rounded-circle">
-                        {% endif %}
-                    </a>
-                    <ul class="dropdown-menu text-small">
-
-                            <li>
-                                <span class="dropdown-item fw-bold"> ¡Hola, {{g.user.username}}! </span>
-                            </li>
-                            
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{url_for('post.create') }}">
-                                <span class="d-inline-block bg-success rounded-circle p-1"></span>
-                                Crear Blog
-                            </a>
-                        </li>
-                        
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{url_for('post.posts') }}">
-                                <span class="d-inline-block bg-primary rounded-circle p-1"></span>
-                                Mis Blogs
-                            </a>
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{url_for('auth.profile', id = g.user.id) }}">
-                                <span class="d-inline-block bg-info rounded-circle p-1"></span>
-                                Perfil
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{url_for('auth.logout') }}">
-                                <span class="d-inline-block bg-danger rounded-circle p-1"></span>
-                                Cerrar sesión
-                            </a>
-                        </li>
-                    </ul>
-                    {% endif %}
-                </div>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{{url_for('home.index') }}">
+            <img src="{{url_for('static', filename = 'img/bp-light.png') }}" alt="logo" width="30" class="me-2">
+            Jose's Wiki
+        </a>
+        
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                {% if not g.user %}
+                    <a class="nav-link px-3" href="{{url_for('auth.login') }}">Login</a>
+                {% else %}
+                    <a class="nav-link px-3" href="{{url_for('auth.logout') }}">Salir</a>
+                {% endif %}
             </div>
         </div>
     </header>
     {% endblock %}
 
-    {%for message in get_flashed_messages() %}
-    <div class="container mt-3">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6 mx-auto">
-                <div class="alert {% block message %} alert-danger {% endblock %}" role="alert">
-                    {{ message }}
+            
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky">
+                    
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                        <span>Categorías</span>
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                📄 Docker & DevOps
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                🐍 Python Scripts
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                🐧 Linux Server
+                            </a>
+                        </li>
+                    </ul>
+
+                    {% if g.user %}
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                        <span>Admin</span>
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                         <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('post.create') }}">Creating Nueva Entrada +</a>
+                         </li>
+                         <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('post.posts') }}">Editar Entradas</a>
+                         </li>
+                    </ul>
+                    {% endif %}
                 </div>
-            </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                
+                {%for message in get_flashed_messages() %}
+                    <div class="alert alert-info mt-3" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                <div class="py-4">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+                
+                <footer class="pt-3 mt-4 text-muted border-top">
+                    &copy; 2025 Jose Cabezas - Knowledge Base
+                </footer>
+            </main>
         </div>
     </div>
-    {% endfor %}
-    <!-- Sección de bloque de contenido -->
-    {% block content %}
-    {% endblock %}
 
     <script src="{{url_for('static', filename = 'js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    
     {{ ckeditor.load() }}
 </body>
-
-
 </html>
