@@ -45,42 +45,21 @@
             
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
                 <div class="position-sticky pt-3 sidebar-sticky">
-                    
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                        <span>Categorías</span>
-                    </h6>
-                    <ul class="nav flex-column mb-2">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                📄 Docker & DevOps
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                🐍 Python Scripts
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                🐧 Linux Server
-                            </a>
-                        </li>
-                    </ul>
-
-                    {% if g.user %}
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                        <span>Admin</span>
-                    </h6>
-                    <ul class="nav flex-column mb-2">
-                         <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('post.create') }}">Creating Nueva Entrada +</a>
-                         </li>
-                         <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('post.posts') }}">Editar Entradas</a>
-                         </li>
-                    </ul>
-                    {% endif %}
-                </div>
+    
+    {% if g.user %}
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+        <span>Admin</span>
+    </h6>
+    <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+            <a class="nav-link" href="{{url_for('post.create') }}">Creating Nueva Entrada +</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{{url_for('post.posts') }}">Editar Entradas</a>
+            </li>
+    </ul>
+    {% endif %}
+</div>
             </nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
