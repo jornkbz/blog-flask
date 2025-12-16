@@ -40,6 +40,8 @@ def create():
     return render_template('admin/create.html')
     
 
+# En blogr/post.py
+
 @bp.route('/update/<int:id>', methods=('GET', 'POST'))
 @login_required
 def update(id):
@@ -52,7 +54,11 @@ def update(id):
         
         db.session.commit()
         flash(f'El blog {post.title} se actualizó correctamente')
-        return redirect(url_for('post.posts'))
+        
+        # --- CAMBIO AQUÍ ---
+        # Antes: return redirect(url_for('post.posts'))
+        # Ahora: Redirigimos a la vista del blog usando su url
+        return redirect(url_for('home.blog', url=post.url))
         
     return render_template('admin/update.html', post=post)
 
