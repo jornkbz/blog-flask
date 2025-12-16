@@ -1,30 +1,49 @@
 {% extends 'base.html' %}
 
-{% block content  %}
+{% block title %}{{ post.title }}{% endblock %}
 
-    <!-- Página de blog -->
+{% block content %}
+<div class="container mt-4">
+    
+    <div class="blog-header py-3 mb-4 border-bottom border-success">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="display-4 fw-bold mb-0 text-uppercase" style="text-shadow: 0 0 10px var(--text-main);">
+                {{ post.title }}
+            </h1>
 
-    <article class="container blog-post">
-        <h1 class="blog-post-title mb-1">{% block title %} {{ post.title }} {% endblock %}</h1>
-        <p class="card-text mt-3">
-            {% if get_user(post.author).photo is none %}
-                <img src ="{{ url_for('static', filename = 'img/user-dark.png') }}" alt="mdo" width="30" class="rounded-circle">
-            {% else %}
-                <img src ="{{ url_for('static', filename = get_user(post.author).photo ) }}" alt="mdo" width="30" class="rounded-circle">
-
+            {% if g.user %}
+            <div>
+                <a href="{{ url_for('post.update', id=post.id) }}" class="btn btn-action btn-edit" style="font-size: 1rem;">
+                    [ EDIT_SOURCE ]
+                </a>
+            </div>
             {% endif %}
-            <span class="mb-1 text-muted"><b>{{ get_user(post.author).username}}</b> - {{ post.created.strftime('%d de %B %Y') }}</span>
-        </p>
-
-        <p class="mb-5 mt-5">{{ post.info }}</p>
-        <hr>
-
-        <div class="mb-5 mt-5">
-            {{ post['content'] | safe }}
-            
         </div>
 
+        <div class="mt-2 d-flex align-items-center text-muted" style="font-family: 'Share Tech Mono'">
+            <img src="{{ url_for('static', filename='img/user-light.png') }}" alt="user" width="24" height="24" class="rounded-circle me-2 border border-success">
+            <span class="me-3">OP: <span class="text-white">{{ get_user(post.author).username }}</span></span>
+            <span>DATE: {{ post.created.strftime('%d-%m-%Y %H:%M') }}</span>
+        </div>
+    </div>
 
+    <article class="blog-post">
+        {% if post.info %}
+        <div class="p-3 mb-4 rounded border border-success bg-transparent" style="color: #aaffaa; font-style: italic;">
+            > {{ post.info }}
+        </div>
+        {% endif %}
+
+        <div class="content-body">
+            {{ post.content | safe }}
+        </div>
     </article>
 
+    <div class="mt-5 pt-4 border-top border-success">
+        <a href="{{ url_for('home.index') }}" class="btn btn-outline-primary">
+            &larr; CD .. (VOLVER)
+        </a>
+    </div>
+
+</div>
 {% endblock %}
