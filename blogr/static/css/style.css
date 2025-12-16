@@ -287,3 +287,49 @@ header.navbar {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
+
+/* =========================================
+   FIX: FORZAR MODO OSCURO SOBRE BOOTSTRAP
+   ========================================= */
+
+/* 1. Apagar las luces en contenedores blancos */
+.bg-light, .bg-white, .bg-body {
+    background-color: rgba(10, 10, 10, 0.95) !important; /* Casi negro */
+    color: var(--text-main) !important;
+    border-color: var(--text-dim) !important;
+}
+
+/* 2. El bloque "Hero" (donde está el buscador) */
+.p-5.mb-4.bg-light {
+    background-color: rgba(0, 20, 0, 0.3) !important; /* Verde muy oscuro transparente */
+    border: 1px solid var(--text-main) !important;
+    box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.1); /* Resplandor interior */
+}
+
+/* 3. Las Tarjetas de los posts */
+.card, .h-100.p-4 {
+    background-color: #050505 !important;
+    border: 1px solid var(--text-dim) !important;
+}
+
+.card:hover, .h-100.p-4:hover {
+    border-color: var(--text-main) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2) !important;
+}
+
+/* 4. Textos secundarios (fechas, etc) */
+.text-muted {
+    color: #58855e !important; /* Verde apagado en vez de gris */
+}
+
+/* 5. Inputs del buscador */
+input.form-control {
+    background-color: #000 !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--text-dim);
+}
+
+input.form-control:focus {
+    box-shadow: 0 0 10px var(--text-main);
+    border-color: var(--text-main);
+}
