@@ -5,27 +5,30 @@
 {% block content %}
 <div class="container mt-4">
     
-    <div class="blog-header py-3 mb-4 border-bottom border-success">
-        <div class="d-flex justify-content-between align-items-center">
-            <h1 class="display-4 fw-bold mb-0 text-uppercase" style="text-shadow: 0 0 10px var(--text-main);">
+<div class="blog-header py-3 mb-4 border-bottom border-success">
+    <div class="d-flex justify-content-between align-items-center">
+        
+        <div class="flex-grow-1 me-3 overflow-hidden">
+            <h1 class="display-4 fw-bold mb-0 text-uppercase text-truncate" style="text-shadow: 0 0 10px var(--text-main);" title="{{ post.title }}">
                 {{ post.title }}
             </h1>
-
-            {% if g.user %}
-            <div>
-                <a href="{{ url_for('post.update', id=post.id) }}" class="btn btn-action btn-edit" style="font-size: 1rem;">
-                    [ EDIT_SOURCE ]
-                </a>
-            </div>
-            {% endif %}
         </div>
 
-        <div class="mt-2 d-flex align-items-center text-muted" style="font-family: 'Share Tech Mono'">
-            <img src="{{ url_for('static', filename='img/user-light.png') }}" alt="user" width="24" height="24" class="rounded-circle me-2 border border-success">
-            <span class="me-3">OP: <span class="text-white">{{ get_user(post.author).username }}</span></span>
-            <span>DATE: {{ post.created.strftime('%d-%m-%Y %H:%M') }}</span>
+        {% if g.user %}
+        <div class="flex-shrink-0">
+            <a href="{{ url_for('post.update', id=post.id) }}" class="btn btn-action btn-edit" style="font-size: 1rem; white-space: nowrap;">
+                [ EDIT_SOURCE ]
+            </a>
         </div>
+        {% endif %}
     </div>
+
+    <div class="mt-2 d-flex align-items-center text-muted" style="font-family: 'Share Tech Mono'">
+        <img src="{{ url_for('static', filename='img/user-light.png') }}" alt="user" width="24" height="24" class="rounded-circle me-2 border border-success">
+        <span class="me-3">OP: <span class="text-white">{{ get_user(post.author).username }}</span></span>
+        <span>DATE: {{ post.created.strftime('%d-%m-%Y %H:%M') }}</span>
+    </div>
+</div>
 
     <article class="blog-post">
         {% if post.info %}
