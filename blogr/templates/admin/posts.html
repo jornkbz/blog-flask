@@ -1,39 +1,62 @@
 {% extends 'base.html' %}
 
+{% block title %}Administración de Sistema{% endblock %}
 
-{% block content  %}
-
-    <div class="container">
-
-        <div class="header">
-            <h2 class="mb-3 mt-3">{% block title %}Tus publicaciones {% endblock %}</h2>
-            <div class="d-flex justify-content-between mb-3">
-                <p>¡Bienvenido al panel de administración de blogs!</p>
-                <a href="{{ url_for('post.create') }}" class="btn btn-outline-success">AÑADIR BLOG</a>
-            </div>
+{% block content %}
+<div class="container mt-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-success pb-3">
+        <div>
+            <h2 class="display-6" style="color: var(--text-main);">DATABASE_MANAGER</h2>
+            <p class="mb-0 text-muted" style="font-family: 'Fira Code'">> Listando entradas del sistema...</p>
         </div>
-        <table class=" table">
+        
+        <a href="{{ url_for('post.create') }}" class="btn btn-cyber">
+            [ + NEW_ENTRY ]
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th class="fs-5">Título del Blog </th>
-                    <th colspan="2" class="fs-5">Acciones</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">SYSTEM_TITLE</th>
+                    <th scope="col">DATE_CREATED</th>
+                    <th scope="col" class="text-end">ACTIONS</th>
                 </tr>
             </thead>
             <tbody>
-                {% for post in posts | reverse %}
-                {% if g.user.id == post.author %}
+                {% for post in posts %}
                 <tr>
-                    <td>{{ post.title }}</td>
-                    <td>
-                        <a href="{{ url_for('post.update', id=post.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                        <a href="{{ url_for('post.delete', id=post.id) }}" class="btn btn-sm btn-danger">Eliminar</a>
+                    <td><code style="color: #008F11;">0x{{ post.id }}</code></td>
+                    
+                    <td class="fw-bold">{{ post.title }}</td>
+                    
+                    <td style="font-family: 'Fira Code'; font-size: 0.9rem;">
+                        {{ post.created.strftime('%Y-%m-%d %H:%M') }}
+                    </td>
+                    
+                    <td class="text-end">
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('post.update', id=post.id) }}" class="btn btn-action btn-edit me-2">
+                                [ EDIT ]
+                            </a>
+                            <a href="{{ url_for('post.delete', id=post.id) }}" class="btn btn-action btn-delete" onclick="return confirm('WARNING: Are you sure you want to PURGE this data?');">
+                                [ DEL ]
+                            </a>
+                        </div>
                     </td>
                 </tr>
-                {% endif %}
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">
+                        // NO DATA FOUND IN MEMORY
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    {% endblock %}
-
-    {% block message %} alert-success {% endblock %}
+</div>
+{% endblock %}
