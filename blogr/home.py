@@ -6,7 +6,7 @@ import time
 bp = Blueprint('home', __name__ )
 
 # Guardamos el momento exacto en que arranca la app para calcular el Uptime
-BOOT_TIME = time.time()
+BOOT_TIME = psutil.boot_time()
 
 def get_user(id):
     # Nota: Usamos get() en lugar de get_or_404 para evitar errores si un usuario se borra
