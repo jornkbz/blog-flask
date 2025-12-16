@@ -51,24 +51,24 @@
                 <div class="position-sticky pt-3 sidebar-sticky">
                     
                     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                        <span>SYSTEM_STATUS</span>
-                        <span class="badge bg-success rounded-0" style="color: black;">ONLINE</span>
-                    </h6>
-                    
-                    <ul class="list-group list-group-flush mx-3 mt-2" style="font-family: 'Share Tech Mono'; font-size: 0.8rem;">
-                        <li class="list-group-item bg-transparent text-success border-0 p-1">
-                            <span class="text-muted">USER:</span> ROOT
-                        </li>
-                        <li class="list-group-item bg-transparent text-success border-0 p-1">
-                            <span class="text-muted">UPTIME:</span> 243 DAYS
-                        </li>
-                        <li class="list-group-item bg-transparent text-success border-0 p-1">
-                            <span class="text-muted">CPU:</span> [||||||....] 42%
-                        </li>
-                        <li class="list-group-item bg-transparent text-success border-0 p-1">
-                            <span class="text-muted">MEM:</span> [||||||||..] 6.4GB
-                        </li>
-                    </ul>
+                            <span>SYSTEM_STATUS</span>
+                            <span class="badge bg-success rounded-0" style="color: black;" id="status-badge">ONLINE</span>
+                        </h6>
+
+                        <ul class="list-group list-group-flush mx-3 mt-2" style="font-family: 'Share Tech Mono'; font-size: 0.8rem;">
+                            <li class="list-group-item bg-transparent text-success border-0 p-1">
+                                <span class="text-muted">USER:</span> {{ g.user.username if g.user else 'GUEST' }}
+                            </li>
+                            <li class="list-group-item bg-transparent text-success border-0 p-1">
+                                <span class="text-muted">UPTIME:</span> <span id="sys-uptime">...</span> DAYS
+                            </li>
+                            <li class="list-group-item bg-transparent text-success border-0 p-1">
+                                <span class="text-muted">CPU:</span> <span id="cpu-bar">[..........]</span> <span id="cpu-val">0%</span>
+                            </li>
+                            <li class="list-group-item bg-transparent text-success border-0 p-1">
+                                <span class="text-muted">MEM:</span> <span id="mem-bar">[..........]</span> <span id="mem-val">0GB</span>
+                            </li>
+                        </ul>
 
                     <hr class="border-success opacity-25 mx-3">
 
@@ -139,5 +139,66 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
     
     {{ ckeditor.load() }}
+
+
+    <script>
+    // Función para generar la barra visual estilo terminal [|||...]
+    function makeProgressBar(percentage) {
+        const totalBars = 10;
+        const filledBars = Math.round((percentage / 100) * totalBars);
+        const emptyBars = totalBars - filledBars;
+        
+        let barString = '[';
+        for (let i = 0; i < filledBars; i++) barString += '|';
+        for (let i = 0; i < emptyBars; i++) barString += '.';
+        barString += ']';
+        
+        return barString;
+    }
+
+    // Función que pide los datos al servidor
+    async function fetchStats() {
+        try {
+            const response = await fetch("{{ url_for('home.server_stats') }}"); // Asegúrate de que el nombre de la función en python es 'server_stats'
+            const data = await response.json();
+
+            // 1. Actualizar Uptime
+            document.getElementById('sys-uptime').innerText = data.uptime_days;
+
+            // 2. Actualizar CPU
+            document.getElementById('cpu-bar').innerText = makeProgressBar(data.cpu);
+            document.getElementById('cpu-val').innerText = data.cpu + '%';
+
+            // 3. Actualizar RAM
+            document.getElementById('mem-bar').innerText = makeProgressBar(data.mem_pct);
+            document.getElementById('mem-val').innerText = data.mem_gb + 'GB';
+
+            // Efecto visual: Si la CPU pasa del 80%, poner el badge en rojo
+            const badge = document.getElementById('status-badge');
+            if (data.cpu > 80) {
+                badge.className = "badge bg-danger rounded-0 blink"; // Blink si hay sobrecarga
+                badge.innerText = "WARNING";
+            } else {
+                badge.className = "badge bg-success rounded-0";
+                badge.innerText = "ONLINE";
+            }
+
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            document.getElementById('status-badge').className = "badge bg-secondary rounded-0";
+            document.getElementById('status-badge').innerText = "OFFLINE";
+        }
+    }
+
+    // Ejecutar inmediatamente y luego cada 3 segundos
+    fetchStats();
+    setInterval(fetchStats, 3000);
+</script>
+
+<style>
+    @keyframes blink-red { 50% { opacity: 0; } }
+    .blink { animation: blink-red 1s linear infinite; }
+</style>
 </body>
 </html>
+
