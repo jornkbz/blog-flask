@@ -333,3 +333,74 @@ input.form-control:focus {
     box-shadow: 0 0 10px var(--text-main);
     border-color: var(--text-main);
 }
+
+/* ======================================================
+   FIX: LECTURA DE POSTS (VISIBILIDAD TOTAL)
+   ====================================================== */
+
+/* 1. Forzar texto verde en TODO el contenido del post */
+main, main p, main li, main span, main div {
+    color: var(--text-main) !important;
+}
+
+/* 2. Enlaces dentro del texto (que no sean azules, sino verdes o blancos) */
+main a {
+    color: var(--text-main) !important;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+main a:hover {
+    color: #fff !important;
+    text-shadow: 0 0 5px #fff;
+}
+
+/* 3. Títulos dentro del post (H2, H3...) */
+.blog-post h1, .blog-post h2, .blog-post h3, .blog-post h4 {
+    color: #fff !important; /* Títulos en blanco para separar secciones */
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed var(--text-dim);
+    padding-bottom: 5px;
+}
+
+/* 4. BLOQUES DE CÓDIGO (Lo más importante para tu Wiki) */
+pre {
+    background-color: #050505 !important;   /* Fondo casi negro */
+    border: 1px solid var(--text-main) !important; /* Borde verde */
+    padding: 15px;
+    border-radius: 0 !important;
+    position: relative;
+    box-shadow: -5px 5px 0px var(--text-dim); /* Sombra sólida retro */
+    margin: 20px 0;
+}
+
+/* El texto dentro del código */
+code, kbd, pre, samp {
+    font-family: 'Fira Code', monospace !important;
+    color: #e0e0e0 !important; /* Código en blanco grisáceo para que se lea bien */
+    text-shadow: none !important; /* Quitamos brillo al código para nitidez */
+}
+
+/* 5. Imágenes dentro del post */
+.blog-post img {
+    border: 1px solid var(--text-dim);
+    filter: grayscale(80%); /* Efecto visual: imágenes desaturadas */
+    transition: all 0.3s;
+    max-width: 100%;
+}
+.blog-post img:hover {
+    filter: grayscale(0%); /* Al pasar el ratón se ven a color */
+    border-color: var(--text-main);
+}
+
+/* 6. Arreglar la fecha y autor (metadata) */
+.text-muted {
+    color: var(--text-dim) !important; /* Verde oscuro en vez de gris invisible */
+}
+
+/* 7. Eliminar fondos blancos residuales de CKEditor */
+.ck-content {
+    background-color: transparent !important;
+    color: var(--text-main) !important;
+}
